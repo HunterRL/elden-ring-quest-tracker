@@ -27,18 +27,21 @@ export function isQuestBlocked(quest: Quest, allQuests: Quest[]): boolean {
  */
 export function isStageLocked(
   quest: Quest,
-  fromStage: number,
+  targetStage: number,
   allQuests: Quest[]
 ): boolean {
-  if (!quest.stageDependencies) return false;
+    if (targetStage <= 0) return false;
+    if (!quest.stageDependencies) {
+        return false;
+    }
+
+    const previousStage = targetStage - 1;
 
   for (const stageDep of quest.stageDependencies) {
-    if (stageDep.fromStage === fromStage) {
-      if (!isDependencyMet(stageDep.dependency, allQuests)) {
-        return true;
-      }
+      if (stageDep.fromStage === previousStage) {
+          return !isDependencyMet(stageDep.dependency, allQuests);
     }
-  }
+    }
   return false;
 }
 
@@ -89,17 +92,19 @@ export function getBlockedReason(quest: Quest, allQuests: Quest[]): string | nul
  */
 export function getStageLockReason(
   quest: Quest,
-  fromStage: number,
+  targetStage: number,
   allQuests: Quest[]
 ): string | null {
-  if (!quest.stageDependencies) return null;
+    if (!quest.stageDependencies || targetStage <= 0) return null;
+
+    const previousStage = targetStage - 1;
 
   for (const stageDep of quest.stageDependencies) {
-    if (stageDep.fromStage === fromStage) {
+      if (stageDep.fromStage === previousStage) {
       if (!isDependencyMet(stageDep.dependency, allQuests)) {
         const depQuest = allQuests.find((q) => q.id === stageDep.dependency.questId);
         if (depQuest) {
-          return `Stage ${fromStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
+            return `Stage ${targetStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
         }
       }
     }

@@ -67,10 +67,11 @@
 }
 
 .quests-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-  min-height: 200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max-content, 350px));
+    gap: 1.5rem;
+    align-items: start;
+    min-height: 200px;
 }
 
 .empty-state {

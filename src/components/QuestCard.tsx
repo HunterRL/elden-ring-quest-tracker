@@ -46,6 +46,14 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
   };
 
   const blockedReason = getBlockedReason(quest, quests);
+  const nextStageLockReason =
+      quest.currentStage !== undefined &&
+          quest.currentStage < quest.stages.length - 1
+          ? getStageLockReason(quest, quest.currentStage + 1, quests)
+            : null;
+    if (blockedReason !== null || nextStageLockReason !== null) {
+        quest.status = 'blocked';
+    };
 
   return (
     <div className={`quest-card ${getStatusColor(quest.status)}`}>
@@ -81,18 +89,23 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
               </span>
       )}
 
-      {blockedReason && (
-        <div className="quest-blocked-message">
+          {blockedReason && (
+              <div className="quest-blocked-message">
           <strong>⚠ {blockedReason}</strong>
         </div>
-      )}
+       )}
+          {nextStageLockReason && (
+            <div className="quest-blocked-message">
+                  <strong>⚠ {nextStageLockReason}</strong>
+            </div>
+        )}
 
       {quest.stages && quest.stages.length > 0 && (
         <div className="quest-stages">
           <div className="stages-progress-bar" style={{ '--progress-fill': `${getProgressFill()}%` } as React.CSSProperties}>
             <div className="progress-track">
               {quest.stages.map((stage, idx) => {
-                const stageLocked = getStageLockReason(quest, idx - 1, quests) !== null;
+                const stageLocked = getStageLockReason(quest, idx, quests);
                 return (
                   <button
                     key={idx}
@@ -110,7 +123,7 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
                     }}
                     title={`Stage ${idx + 1}: ${stage}`}
                     aria-label={`Stage ${idx + 1}`}
-                    disabled={stageLocked || quest.status === 'blocked'}
+                    disabled={stageLocked === 'blocked'}
                   >
                     {stageLocked ? '🔒' : idx + 1}
                   </button>

@@ -2,23 +2,25 @@ import type { Quest } from '../types/quest';
 
 const fiaQuestline: Quest = {
   id: 'quest-fia-001',
-  name: "Fia's Questline",
+  name: "Fia's Quest",
   npc: 'Fia, the Deathbed Companion',
   requirements: ['Defeat Godrick the Grafted'],
   status: 'blocked',
   description: 'Fia seeks to become the Elden Lord. Follow her questline for the Age of Duskborn ending.',
-  location: 'Roundtable Hold, Crumbling Farum Azula',
+  location: 'Roundtable Hold',
   rewards: ['Deathbed Dress', 'Cursemark of Death', 'Mending Rune of the Death-Prince'],
   notes: 'Major questline with consequences.',
   stages: [
-    'Give the Black Knifeprint to Sorcerer Rogier',
-    'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
-    'Find first Seedbed Curse',
-    'Find second Seedbed Curse',
-    'Find third Seedbed Curse',
-    'Meet at Deeproot Depths',
-    'Defeat Fia champions',
-    'Complete ending'
+      'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
+      'Head to the Altus Plateau, and speak to Fia near the Grand Lift of Dectus',
+      'Speak with Fia to receive the Weathered Dagger',
+      'Give the Dagger to D at the Roundtable Hold',
+      'Reload the area and speak with Fia at her new location (Smithing Master Hewg)',
+      "Go to the Prince of Death's Throne and speak with Fia",
+      'Embrace her when she asks you if you came to kill her',
+      'Reload the area, and speak to Fia again',
+      'Enter the dream and defeat Lichdragon Fortissax',
+      "Return to Fia to receive the Mending Rune of the Death-Prince and Fia's Set"
   ],
   currentStage: 0,
   // Fia's Quest can't be started until Patches' quest is at stage 2
