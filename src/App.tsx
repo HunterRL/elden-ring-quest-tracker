@@ -1,122 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import type { Quest } from './types/quest';
+import { questStorage } from './utils/questStorage';
+import { QuestForm } from './components/QuestForm';
+import { QuestList } from './components/QuestList';
+import { Questlines } from './data/Questlines';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [quests, setQuests] = useState<Quest[]>([]);
+  const [showForm, setShowForm] = useState(false);
+
+  // Load quests from localStorage on mount, or initialize with Fia's questline
+  useEffect(() => {
+    const savedQuests = questStorage.loadQuests();
+    if (savedQuests.length === 0) {
+        setQuests(Questlines);
+        Questlines.map (j => questStorage.addQuest(j));
+    } else {
+      setQuests(savedQuests);
+    }
+  }, []);
+
+  const handleAddQuest = (questData: Omit<Quest, 'id'>) => {
+    const newQuest: Quest = {
+      ...questData,
+      id: `quest-${Date.now()}`,
+    };
+    setQuests([...quests, newQuest]);
+    questStorage.addQuest(newQuest);
+    setShowForm(false);
+  };
+
+  const handleStatusChange = (id: string, status: Quest['status']) => {
+    setQuests(
+      quests.map((q) => (q.id === id ? { ...q, status } : q))
+    );
+    questStorage.updateQuestStatus(id, status);
+  };
+
+  const handleDeleteQuest = (id: string) => {
+    setQuests(quests.filter((q) => q.id !== id));
+    questStorage.deleteQuest(id);
+  };
+
+  const handleStageProgress = (id: string, stageIndex: number) => {
+    const quest = quests.find((q) => q.id === id);
+    const isLastStage = quest?.stages && stageIndex >= quest.stages.length - 1;
+
+    setQuests(
+      quests.map((q) =>
+        q.id === id
+          ? {
+              ...q,
+              currentStage: stageIndex,
+              status: isLastStage ? 'completed' : 'in-progress',
+            }
+          : q
+      )
+    );
+    questStorage.updateQuest(id, {
+      currentStage: stageIndex,
+      status: isLastStage ? 'completed' : 'in-progress',
+    });
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Elden Ring Quest Tracker</h1>
+        <p>The Call of Long-Loss grace calls to you Tranished</p>
+      </header>
 
-      <div className="ticks"></div>
+      <main className="app-main">
+        {showForm ? (
+          <section className="form-section">
+            <h2>Add New Quest</h2>
+            <QuestForm
+              onSubmit={handleAddQuest}
+              onCancel={() => setShowForm(false)}
+            />
+          </section>
+        ) : (
+          <button
+            className="btn btn-primary btn-add-quest"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Quest
+          </button>
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <section className="list-section">
+          <QuestList
+            quests={quests}
+            onStatusChange={handleStatusChange}
+            onDelete={handleDeleteQuest}
+            onStageProgress={handleStageProgress}
+          />
+        </section>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
