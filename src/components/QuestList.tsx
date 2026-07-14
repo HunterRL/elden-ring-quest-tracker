@@ -17,7 +17,7 @@ export const QuestList: FC<QuestListProps> = ({
   onDelete,
   onStageProgress,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'not-started' | 'in-progress' | 'completed'>(
+  const [filter, setFilter] = useState<'all' | 'not-started' | 'in-progress' | 'completed' | 'blocked'>(
     'all'
   );
 
@@ -30,6 +30,7 @@ export const QuestList: FC<QuestListProps> = ({
     notStarted: quests.filter((q) => q.status === 'not-started').length,
     inProgress: quests.filter((q) => q.status === 'in-progress').length,
     completed: quests.filter((q) => q.status === 'completed').length,
+    blocked: quests.filter((q) => q.status === 'blocked').length,
   };
 
   return (
@@ -50,6 +51,10 @@ export const QuestList: FC<QuestListProps> = ({
         <div className="stat-item">
           <span className="stat-label">Completed:</span>
           <span className="stat-value">{stats.completed}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Blocked:</span>
+          <span className="stat-value">{stats.blocked}</span>
         </div>
       </div>
 
@@ -78,6 +83,12 @@ export const QuestList: FC<QuestListProps> = ({
         >
           Completed ({stats.completed})
         </button>
+        <button
+          className={`filter-btn ${filter === 'blocked' ? 'active' : ''}`}
+          onClick={() => setFilter('blocked')}
+        >
+          Blocked ({stats.blocked})
+        </button>
       </div>
 
       <div className="quests-grid">
@@ -90,6 +101,7 @@ export const QuestList: FC<QuestListProps> = ({
             <QuestCard
               key={quest.id}
               quest={quest}
+              quests={quests}
               onStatusChange={onStatusChange}
               onDelete={onDelete}
               onStageProgress={onStageProgress}

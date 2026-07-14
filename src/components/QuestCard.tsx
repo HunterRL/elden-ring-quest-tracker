@@ -1,15 +1,17 @@
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
+import { getBlockedReason, getStageLockReason } from '../utils/questDependencies';
 import '../styles/QuestCard.css';
 
 interface QuestCardProps {
   quest: Quest;
+  quests?: Quest[];
   onStatusChange: (id: string, status: Quest['status']) => void;
   onDelete: (id: string) => void;
   onStageProgress?: (id: string, stageIndex: number) => void;
 }
 
-export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete, onStageProgress }) => {
+export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChange, onDelete, onStageProgress }) => {
   const getStatusColor = (status: Quest['status']): string => {
     switch (status) {
       case 'not-started':
@@ -18,6 +20,8 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete,
         return 'status-in-progress';
       case 'completed':
         return 'status-completed';
+      case 'blocked':
+        return 'status-blocked';
     }
   };
 
@@ -29,6 +33,8 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete,
         return 'In Progress';
       case 'completed':
         return 'Completed';
+      case 'blocked':
+        return 'Blocked';
     }
   };
 
@@ -38,6 +44,8 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete,
     if (quest.currentStage === undefined) return 0;
     return ((quest.currentStage + 1) / quest.stages.length) * 100;
   };
+
+  const blockedReason = getBlockedReason(quest, quests);
 
   return (
     <div className={`quest-card ${getStatusColor(quest.status)}`}>
@@ -73,25 +81,41 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete,
               </span>
       )}
 
+      {blockedReason && (
+        <div className="quest-blocked-message">
+          <strong>⚠ {blockedReason}</strong>
+        </div>
+      )}
+
       {quest.stages && quest.stages.length > 0 && (
         <div className="quest-stages">
           <div className="stages-progress-bar" style={{ '--progress-fill': `${getProgressFill()}%` } as React.CSSProperties}>
             <div className="progress-track">
-              {quest.stages.map((stage, idx) => (
-                <button
-                  key={idx}
-                  className={`stage-circle ${
-                    quest.currentStage !== undefined && idx <= quest.currentStage
-                      ? 'stage-completed'
-                      : ''
-                  } ${quest.currentStage === idx ? 'stage-current' : ''}`}
-                  onClick={() => onStageProgress?.(quest.id, idx)}
-                  title={`Stage ${idx + 1}: ${stage}`}
-                  aria-label={`Stage ${idx + 1}`}
-                >
-                  {idx + 1}
-                </button>
-              ))}
+              {quest.stages.map((stage, idx) => {
+                const stageLocked = getStageLockReason(quest, idx - 1, quests) !== null;
+                return (
+                  <button
+                    key={idx}
+                    className={`stage-circle ${
+                      quest.currentStage !== undefined && idx <= quest.currentStage
+                        ? 'stage-completed'
+                        : ''
+                    } ${quest.currentStage === idx ? 'stage-current' : ''}${
+                      stageLocked ? ' stage-locked' : ''
+                    }`}
+                    onClick={() => {
+                      if (!stageLocked && quest.status !== 'blocked') {
+                        onStageProgress?.(quest.id, idx);
+                      }
+                    }}
+                    title={`Stage ${idx + 1}: ${stage}`}
+                    aria-label={`Stage ${idx + 1}`}
+                    disabled={stageLocked || quest.status === 'blocked'}
+                  >
+                    {stageLocked ? '🔒' : idx + 1}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -134,10 +158,12 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, onStatusChange, onDelete,
           onChange={(e) =>
             onStatusChange(quest.id, e.target.value as Quest['status'])
           }
+          disabled={quest.status === 'blocked'}
         >
           <option value="not-started">Not Started</option>
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
+          <option value="blocked">Blocked</option>
         </select>
         <span className={`status-badge ${getStatusColor(quest.status)}`}>
           {getStatusLabel(quest.status)}

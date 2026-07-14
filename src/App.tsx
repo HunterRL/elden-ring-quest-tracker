@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Quest } from './types/quest';
 import { questStorage } from './utils/questStorage';
+import { isQuestBlocked, isStageLocked } from './utils/questDependencies';
 import { QuestForm } from './components/QuestForm';
 import { QuestList } from './components/QuestList';
 import { Questlines } from './data/Questlines';
@@ -31,11 +32,33 @@ function App() {
     setShowForm(false);
   };
 
-  const handleStatusChange = (id: string, status: Quest['status']) => {
-    setQuests(
-      quests.map((q) => (q.id === id ? { ...q, status } : q))
-    );
-    questStorage.updateQuestStatus(id, status);
+  const handleStatusChange = (id: string, newStatus: Quest['status']) => {
+    // Get the full quest context
+    const updatedQuests = quests.map((q) => {
+      if (q.id === id) {
+        // If trying to set to in-progress, check if blocked
+        if (newStatus === 'in-progress' && isQuestBlocked(q, quests)) {
+          return { ...q, status: 'blocked' as const };
+        }
+        return { ...q, status: newStatus };
+      }
+      return q;
+    });
+
+    // Update all dependent quests - check if their blocked status should change
+    const finalQuests = updatedQuests.map((q) => {
+      if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
+        // Quest is no longer blocked, set it to not-started
+        return { ...q, status: 'not-started' as const };
+      }
+      return q;
+    });
+
+    setQuests(finalQuests);
+    const updatedQuest = finalQuests.find(q => q.id === id);
+    if (updatedQuest) {
+      questStorage.updateQuestStatus(id, updatedQuest.status);
+    }
   };
 
   const handleDeleteQuest = (id: string) => {
@@ -45,22 +68,45 @@ function App() {
 
   const handleStageProgress = (id: string, stageIndex: number) => {
     const quest = quests.find((q) => q.id === id);
-    const isLastStage = quest?.stages && stageIndex >= quest.stages.length - 1;
+    if (!quest) return;
 
-    setQuests(
-      quests.map((q) =>
-        q.id === id
-          ? {
-              ...q,
-              currentStage: stageIndex,
-              status: isLastStage ? 'completed' : 'in-progress',
-            }
-          : q
-      )
+    // Check if this stage progression is locked
+    if (isStageLocked(quest, quest.currentStage ?? 0, quests)) {
+      return; // Don't allow progression
+    }
+
+    const isLastStage = quest.stages && stageIndex >= quest.stages.length - 1;
+
+    const updatedQuests = quests.map((q) =>
+      q.id === id
+        ? {
+            ...q,
+            currentStage: stageIndex,
+            status: isLastStage ? ('completed' as const) : ('in-progress' as const),
+          }
+        : q
     );
+
+    // Check if any dependent quests should be unblocked
+    const finalQuests = updatedQuests.map((q) => {
+      if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
+        return { ...q, status: 'not-started' as const };
+      }
+      return q;
+    });
+
+    setQuests(finalQuests);
     questStorage.updateQuest(id, {
       currentStage: stageIndex,
       status: isLastStage ? 'completed' : 'in-progress',
+    });
+
+    // Update dependent quests in storage
+    finalQuests.forEach((q) => {
+      const originalQuest = quests.find((orig) => orig.id === q.id);
+      if (originalQuest && originalQuest.status !== q.status) {
+        questStorage.updateQuestStatus(q.id, q.status);
+      }
     });
   };
 
@@ -68,7 +114,7 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>Elden Ring Quest Tracker</h1>
-        <p>The Call of Long-Loss grace calls to you Tranished</p>
+        <p>The Call of Long-Lost Grace guides you Tranished</p>
       </header>
 
       <main className="app-main">

@@ -27,6 +27,11 @@
   border-left: 4px solid #2ecc71;
 }
 
+.quest-card.status-blocked {
+  border-left: 4px solid #d63031;
+  opacity: 0.8;
+}
+
 .quest-header {
   display: flex;
   justify-content: space-between;
@@ -315,6 +320,39 @@
   background: rgba(46, 204, 113, 0.2);
   color: #81c784;
   border: 1px solid #2ecc71;
+}
+
+.status-badge.status-blocked {
+  background: rgba(214, 48, 49, 0.2);
+  color: #ff7675;
+  border: 1px solid #d63031;
+}
+
+.quest-blocked-message {
+  background: rgba(214, 48, 49, 0.15);
+  border-left: 3px solid #d63031;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  color: #ff7675;
+  font-size: 0.9rem;
+}
+
+.stage-circle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stage-circle.stage-locked {
+  background: rgba(214, 48, 49, 0.3);
+  border-color: #d63031;
+  color: #ff7675;
+  cursor: not-allowed;
+}
+
+.stage-circle.stage-locked:hover {
+  transform: none;
+  background: rgba(214, 48, 49, 0.3);
 }
 
 @media (max-width: 768px) {
