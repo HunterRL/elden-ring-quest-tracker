@@ -12,14 +12,14 @@ export interface Quest {
   id: string;
   name: string;
   npc: string;
-  requirements: string[];
+  requirements?: string[];
   status: 'not-started' | 'in-progress' | 'completed' | 'blocked';
   description: string;
   location: string;
   rewards: string[];
-  notes: string;
-  stages?: string[];
-  currentStage?: number;
+  notes?: string;
+  stages: string[];
+  currentStage: number;
   dependencies?: QuestDependency[]; // Quest must reach this stage before this quest can start
   stageDependencies?: QuestStageDependency[]; // Stage-specific dependencies
 }

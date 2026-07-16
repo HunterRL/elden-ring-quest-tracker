@@ -53,9 +53,10 @@ export const QuestForm: FC<QuestFormProps> = ({ onSubmit, onCancel }) => {
         .map((r) => r.trim())
         .filter((r) => r),
       notes: formData.notes,
-      status: formData.status,
-      stages: stages.length > 0 ? stages : undefined,
-      currentStage: formData.status === 'not-started' ? undefined : 0,
+        status: formData.status,
+      requirements: [],
+      stages: stages.length > 0 ? stages : [],
+        currentStage: 0,
     });
   };
 

@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import { getBlockedReason, getStageLockReason } from '../utils/questDependencies';
+import ReactMarkdown from "react-markdown"
 import '../styles/QuestCard.css';
 
 interface QuestCardProps {
@@ -136,7 +137,7 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
             <div className="stage-info">
               <div className="stage-text-display">
                 <span className="stage-label">Current Stage:</span>
-                <span className="stage-name">{quest.stages[quest.currentStage]}</span>
+                <span className="stage-name"><ReactMarkdown>{quest.stages[quest.currentStage]}</ReactMarkdown></span>
               </div>
               <div className="stage-counter">
                 {Math.min(quest.currentStage + 1, quest.stages.length)} / {quest.stages.length}
@@ -151,7 +152,7 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
           <strong>Rewards:</strong>
           <ul>
             {quest.rewards.map((reward, idx) => (
-              <li key={idx}>{reward}</li>
+                <li key={idx}><ReactMarkdown>{reward}</ReactMarkdown></li>
             ))}
           </ul>
         </div>

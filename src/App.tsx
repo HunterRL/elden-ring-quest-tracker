@@ -11,7 +11,7 @@ function App() {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  // Load quests from localStorage on mount, or initialize with Fia's questline
+  // Load quests from localStorage on mount, or initialize with questlines
   useEffect(() => {
     const savedQuests = questStorage.loadQuests();
     if (savedQuests.length === 0) {
@@ -88,7 +88,10 @@ function App() {
     );
 
     // Check if any dependent quests should be unblocked
-    const finalQuests = updatedQuests.map((q) => {
+      const finalQuests = updatedQuests.map((q) => {
+/*          if (q.status === 'blocked' && !isStageLocked(q, q.currentStage + 1, updatedQuests)) {
+              return { ...q, status: 'in-progress' as const };
+          }*/
       if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
         return { ...q, status: 'not-started' as const };
       }

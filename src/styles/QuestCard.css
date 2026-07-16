@@ -74,7 +74,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     font-size: 0.9rem;
 }
 
@@ -212,6 +212,7 @@
     font-size: 1rem;
     color: #e0e0e0;
     font-weight: 500;
+    max-width: 60ch;
 }
 
 .stage-counter {
