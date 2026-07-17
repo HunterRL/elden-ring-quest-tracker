@@ -7,15 +7,15 @@ import type { Quest, QuestDependency } from '../types/quest';
  * @returns true if the quest is blocked, false otherwise
  */
 export function isQuestBlocked(quest: Quest, allQuests: Quest[]): boolean {
-  // Check if quest has dependencies for starting
-  if (quest.dependencies && quest.dependencies.length > 0) {
-    for (const dep of quest.dependencies) {
-      if (!isDependencyMet(dep, allQuests)) {
-        return true;
-      }
-    }
-  }
-  return false;
+	// Check if quest has dependencies for starting
+	if (quest.dependencies && quest.dependencies.length > 0) {
+		for (const dep of quest.dependencies) {
+			if (!isDependencyMet(dep, allQuests)) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 /**
@@ -26,23 +26,23 @@ export function isQuestBlocked(quest: Quest, allQuests: Quest[]): boolean {
  * @returns true if the stage progression is blocked, false otherwise
  */
 export function isStageLocked(
-  quest: Quest,
-  targetStage: number,
-  allQuests: Quest[]
+	quest: Quest,
+	targetStage: number,
+	allQuests: Quest[]
 ): boolean {
-    if (targetStage <= 0) return false;
-    if (!quest.stageDependencies) {
-        return false;
-    }
+	if (targetStage <= 0) { return false; }
+	if (!quest.stageDependencies) {
+		return false;
+	}
 
-    const previousStage = targetStage - 1;
+	const previousStage = targetStage - 1;
 
-  for (const stageDep of quest.stageDependencies) {
-      if (stageDep.fromStage === previousStage) {
-          return !isDependencyMet(stageDep.dependency, allQuests);
-    }
-    }
-  return false;
+	for (const stageDep of quest.stageDependencies) {
+		if (stageDep.fromStage === previousStage) {
+			return !isDependencyMet(stageDep.dependency, allQuests);
+		}
+	}
+	return false;
 }
 
 /**
@@ -52,15 +52,15 @@ export function isStageLocked(
  * @returns true if the dependency is met, false otherwise
  */
 function isDependencyMet(dependency: QuestDependency, allQuests: Quest[]): boolean {
-  const dependencyQuest = allQuests.find((q) => q.id === dependency.questId);
-  if (!dependencyQuest) return false;
+	const dependencyQuest = allQuests.find(q => q.id === dependency.questId);
+	if (!dependencyQuest) { return false; }
 
-  // Check if the dependency quest has reached the required stage
-  if (dependencyQuest.currentStage === undefined) {
-    return false;
-  }
+	// Check if the dependency quest has reached the required stage
+	if (dependencyQuest.currentStage === undefined) {
+		return false;
+	}
 
-  return dependencyQuest.currentStage >= dependency.requiredStage;
+	return dependencyQuest.currentStage >= dependency.requiredStage;
 }
 
 /**
@@ -70,17 +70,17 @@ function isDependencyMet(dependency: QuestDependency, allQuests: Quest[]): boole
  * @returns A description of why the quest is blocked, or null if not blocked
  */
 export function getBlockedReason(quest: Quest, allQuests: Quest[]): string | null {
-  if (quest.dependencies && quest.dependencies.length > 0) {
-    for (const dep of quest.dependencies) {
-      if (!isDependencyMet(dep, allQuests)) {
-        const depQuest = allQuests.find((q) => q.id === dep.questId);
-        if (depQuest) {
-          return `Requires ${depQuest.name} to reach Stage ${dep.requiredStage + 1}`;
-        }
-      }
-    }
-  }
-  return null;
+	if (quest.dependencies && quest.dependencies.length > 0) {
+		for (const dep of quest.dependencies) {
+			if (!isDependencyMet(dep, allQuests)) {
+				const depQuest = allQuests.find(q => q.id === dep.questId);
+				if (depQuest) {
+					return `Requires ${depQuest.name} to reach Stage ${dep.requiredStage + 1}`;
+				}
+			}
+		}
+	}
+	return null;
 }
 
 /**
@@ -91,23 +91,23 @@ export function getBlockedReason(quest: Quest, allQuests: Quest[]): string | nul
  * @returns A description of why the stage is locked, or null if not locked
  */
 export function getStageLockReason(
-  quest: Quest,
-  targetStage: number,
-  allQuests: Quest[]
+	quest: Quest,
+	targetStage: number,
+	allQuests: Quest[]
 ): string | null {
-    if (!quest.stageDependencies || targetStage <= 0) return null;
+	if (!quest.stageDependencies || targetStage <= 0) { return null; }
 
-    const previousStage = targetStage - 1;
+	const previousStage = targetStage - 1;
 
-  for (const stageDep of quest.stageDependencies) {
-      if (stageDep.fromStage === previousStage) {
-      if (!isDependencyMet(stageDep.dependency, allQuests)) {
-        const depQuest = allQuests.find((q) => q.id === stageDep.dependency.questId);
-        if (depQuest) {
-            return `Stage ${targetStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
-        }
-      }
-    }
-  }
-  return null;
-}
+	for (const stageDep of quest.stageDependencies) {
+		if (stageDep.fromStage === previousStage) {
+			if (!isDependencyMet(stageDep.dependency, allQuests)) {
+				const depQuest = allQuests.find(q => q.id === stageDep.dependency.questId);
+				if (depQuest) {
+					return `Stage ${targetStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
+				}
+			}
+		}
+	}
+	return null;
+};

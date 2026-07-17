@@ -22,7 +22,7 @@ export interface Quest {
 	currentStage: number;
 	dependencies?: QuestDependency[];
 	stageDependencies?: QuestStageDependency[];
-
+	wasStageLocked: boolean;
 }
 
 export type QuestStatus = Quest['status'];
