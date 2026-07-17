@@ -6,14 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
+    "lint": "eslint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.7.0",
+    "globals": "^17.7.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "typescript-eslint": "^8.64.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",

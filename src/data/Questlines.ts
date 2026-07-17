@@ -1,27 +1,28 @@
 import type { Quest } from '../types/quest';
 
 const fiaQuestline: Quest = {
-  id: 'quest-fia-001',
-  name: "Fia's Quest",
-  npc: 'Fia, the Deathbed Companion',
-  requirements: ['Defeat Godrick the Grafted'],
+    id: 'quest-fia-001',
+    name: "Fia's Quest",
+    npc: 'Fia, the Deathbed Companion',
+    requirements: ['Defeat Godrick the Grafted'],
     status: 'not-started',
-  description: 'Fia seeks to become the Elden Lord. Follow her questline for the Age of Duskborn ending.',
-  location: 'Roundtable Hold',
+    description: 'Fia seeks to become the Elden Lord. Follow her questline for the Age of Duskborn ending.',
+    location: 'Roundtable Hold',
     rewards: ['[Mending Rune of the Death-Prince](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Death-Prince)', "[Fia's Set](https://eldenring.wiki.gg/wiki/Fia%27s_Set)"
     ],
-  notes: 'Major questline with consequences.',
-  stages: [
-      'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
-      'Head to the Altus Plateau, and speak to Fia near the Grand Lift of Dectus',
-      'Speak with Fia to receive the Weathered Dagger',
-      'Give the Dagger to D at the Roundtable Hold',
-      'Reload the area and speak with Fia at her new location (Smithing Master Hewg)',
-      "Go to the Prince of Death's Throne and speak with Fia",
-      'Embrace her when she asks you if you came to kill her',
-      'Reload the area, and speak to Fia again',
-      'Enter the dream and defeat Lichdragon Fortissax',
-      "Return to Fia to receive the [Mending Rune of the Death-Prince](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Death-Prince) and [Fia's Set](https://eldenring.wiki.gg/wiki/Fia%27s_Set)"
+    notes: 'Major questline with consequences.',
+    stages: [
+        'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
+        'Head to the Altus Plateau, and speak to Fia near the Grand Lift of Dectus',
+        'Speak with Fia to receive the Weathered Dagger',
+        'Give the Dagger to D at the Roundtable Hold',
+        'Reload the area and speak with Fia at her new location (Smithing Master Hewg)',
+        "Go to the Prince of Death's Throne and speak with Fia",
+        'Embrace her when she asks you if you came to kill her',
+        'Reload the area, and speak to Fia again',
+        'Enter the dream and defeat Lichdragon Fortissax',
+        "Return to Fia to receive the [Mending Rune of the Death-Prince](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Death-Prince) and [Fia's Set](https://eldenring.wiki.gg/wiki/Fia%27s_Set)",
+        'Completed'
   ],
   currentStage: 0,
   // Fia's Quest can't be started until Patches' quest is at stage 2
@@ -63,8 +64,19 @@ const patchesQuestline: Quest = {
         'Reload the area and speak with Patches again to receive the [Magma Whip Candlestick](https://eldenring.wiki.gg/wiki/Magma_Whip_Candlestick)', 
         "Speak with Patches at the Shaded Castle to receive the [Dancer's Castanets](https://eldenring.wiki.gg/wiki/Dancer's_Castanets)",
         "Return to Murkwater Cave, fight Patches, and spare him once again to recieve the [Patches' Crouch](https://eldenring.wiki.gg/wiki/Patches'_Crouch)",
+        'Completed'
     ],
     currentStage: 0,
+
+    stageDependencies: [
+        {
+            fromStage: 5, 
+            dependency: {
+                questId: 'quest-tanith-001',
+                requiredStage: 6, 
+            }
+        }
+    ]
 };
 
 const tanithQuestline: Quest = {
@@ -90,9 +102,20 @@ const tanithQuestline: Quest = {
         "Speak to Tanith and she will ask if you want to meet their Lord, saying yes teleports you to a site of grace immediately before the boss fight with Rykard, Lord of Blasphemy.",
         'Speak with Tanith again',
         "Once Tanith has disappeared, find her in Rykard's boss area",
-        "Give Tanith the Dancer's Castanets"
+        "Give Tanith the [Dancer's Castanets](https://eldenring.wiki.gg/wiki/Dancer's_Castanets)",
+        'Completed'
     ],
     currentStage: 0,
+
+    stageDependencies: [
+        {
+            fromStage: 13, 
+            dependency: {
+                questId: 'quest-patches-001',
+                requiredStage: 10, 
+            }
+        }
+    ]
 };
 
 
