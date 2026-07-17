@@ -91,11 +91,13 @@ function App() {
 
 		// Check if any dependent quests should be unblocked
 		const finalQuests = updatedQuests.map(q => {
-			/* if (q.status === 'blocked' && !isStageLocked(q, q.currentStage + 1, updatedQuests)) {
-              return { ...q, status: 'in-progress' as const };
-          } */
 			if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
-				return { ...q, status: 'not-started' as const };
+				if (q.wasStageLocked) {
+					q.wasStageLocked = false;
+					return { ...q, status: 'in-progress' as const };
+				} else {
+					return { ...q, status: 'not-started' as const };
+				}
 			}
 			return q;
 		});

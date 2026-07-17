@@ -39,7 +39,10 @@ export function isStageLocked(
 
 	for (const stageDep of quest.stageDependencies) {
 		if (stageDep.fromStage === previousStage) {
-			return !isDependencyMet(stageDep.dependency, allQuests);
+			if (!isDependencyMet(stageDep.dependency, allQuests)) {
+				quest.wasStageLocked = true;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -104,6 +107,7 @@ export function getStageLockReason(
 			if (!isDependencyMet(stageDep.dependency, allQuests)) {
 				const depQuest = allQuests.find(q => q.id === stageDep.dependency.questId);
 				if (depQuest) {
+					quest.wasStageLocked = true;
 					return `Stage ${targetStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
 				}
 			}
