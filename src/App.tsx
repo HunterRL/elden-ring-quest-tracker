@@ -5,7 +5,7 @@ import { QuestForm } from './components/QuestForm';
 import { QuestList } from './components/QuestList';
 import { Questlines } from './data/Questlines';
 import { questStorage } from './utils/questStorage';
-import './App.css';
+import './styles/App.css';
 
 function App() {
 	const [ quests, setQuests ] = useState<Quest[]>([]);
@@ -123,8 +123,8 @@ function App() {
 				<h1>Elden Ring Quest Tracker</h1>
 				<p>The Call of Long-Lost Grace guides you Tranished</p>
 			</header>
-
 			<main className='app-main'>
+				{/*
 				{showForm
 					? (
 						<section className='form-section'>
@@ -142,7 +142,7 @@ function App() {
 							+ Add Quest
 						</button>
 					)}
-
+					*/}
 				<section className='list-section'>
 					<QuestList
 						quests={quests}

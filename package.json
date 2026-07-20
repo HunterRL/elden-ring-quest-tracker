@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+	"scripts": {
+		"start": "vite",
+		"build": "tsc -b && vite build",
 		"lint": "eslint",
 		"fix": "eslint --fix",
-    "preview": "vite preview"
-  },
+		"preview": "vite preview"
+	},
   "dependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",

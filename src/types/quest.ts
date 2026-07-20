@@ -1,10 +1,10 @@
 export interface QuestDependency {
 	questId: string;
-	requiredStage: number; // 0-indexed stage
+	requiredStage: number;
 }
 
 export interface QuestStageDependency {
-	fromStage: number; // The stage that requires the dependency
+	fromStage: number;
 	dependency: QuestDependency;
 }
 

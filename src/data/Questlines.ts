@@ -119,4 +119,28 @@ const tanithQuestline: Quest = {
 	]
 };
 
-export const Questlines = [ fiaQuestline, patchesQuestline, tanithQuestline ];
+const roderikaquest: Quest = {
+	id: 'quest-roderika-001',
+	name: 'Roderika\'s Quest',
+	npc: 'Roderika',
+	status: 'not-started',
+	description: 'Blank',
+	location: 'Stormhill Shack',
+	rewards: ['[Crimson Hood](https://eldenring.wiki.gg/wiki/Crimson_Hood)', '[Spirit Tuning](https://eldenring.wiki.fextralife.com/Upgrades)'],
+	notes: 'Blank.',
+	stages: [
+		'Speak with the Red Cloaked Woman at the Stormhill Shack',
+		'Obtain the [Chrysalid\'s Memento](https://eldenring.wiki.gg/wiki/Chrysalid\'s_Memento) from Stormveil Castle',
+		'Give the [Chrysalid\'s Memento](https://eldenring.wiki.gg/wiki/Chrysalid\'s_Memento) to Roderika before killing Godrick the Grafted',
+		'Speak with Roderkia at the Roundtable Hold',
+		'Speak with Smithing Master Hewg and return to Rderkia',
+		'Speak with Roderika again',
+		'Return to Smithing Master Hewg',
+		'Reload the area and Roderkia will now offer spirit tuning services',
+		'Return to where you found the [Chrysalid\'s Memento](https://eldenring.wiki.gg/wiki/Chrysalid\'s_Memento) to find the [Crimson Hood](https://eldenring.wiki.gg/wiki/Crimson_Hood)',
+		'Completed'
+	],
+	currentStage: 0,
+	wasStageLocked: false
+};
+export const Questlines = [ fiaQuestline, patchesQuestline, tanithQuestline, roderikaquest ];
