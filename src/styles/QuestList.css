@@ -83,6 +83,7 @@
   min-height: 300px;
   background: rgba(255, 255, 255, 0.03);
   border: 2px dashed rgba(212, 175, 55, 0.3);
+  padding: 5px;
   border-radius: 8px;
 }
 

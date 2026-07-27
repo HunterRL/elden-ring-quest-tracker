@@ -9,7 +9,6 @@ const fiaQuestline: Quest = {
 	description: 'Fia seeks to become the Elden Lord. Follow her questline for the Age of Duskborn ending.',
 	location: 'Roundtable Hold',
 	rewards: [ '[Mending Rune of the Death-Prince](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Death-Prince)', '[Fia\'s Set](https://eldenring.wiki.gg/wiki/Fia%27s_Set)' ],
-	notes: 'Major questline with consequences.',
 	stages: [
 		'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
 		'Head to the Altus Plateau, and speak to Fia near the Grand Lift of Dectus',
@@ -87,7 +86,6 @@ const tanithQuestline: Quest = {
 	description: 'Help Tanith fight against the Tyranny of the Fingers.',
 	location: 'Murkwater Cave',
 	rewards: [ '[Magma Shot](https://eldenring.wiki.gg/wiki/Magma_Shot)', '[Serpentbone Blade](https://eldenring.wiki.gg/wiki/Serpentbone_Blade)', '[Taker\'s Cameo](https://eldenring.wiki.gg/wiki/Taker\'s_Cameo)' ],
-	notes: 'Major questline with consequences.',
 	stages: [
 		'Speak with Tanith at Volcano Manor, agree to join her family, and receive the [Drawing-Room Key](https://eldenring.wiki.gg/wiki/Drawing-Room_Key)',
 		'Using the Drawing-Room Key, open up several doors in Volcano Manro and pick up the note left on the table for your first mission',
@@ -126,8 +124,7 @@ const roderikaquest: Quest = {
 	status: 'not-started',
 	description: 'Blank',
 	location: 'Stormhill Shack',
-	rewards: ['[Crimson Hood](https://eldenring.wiki.gg/wiki/Crimson_Hood)', '[Spirit Tuning](https://eldenring.wiki.fextralife.com/Upgrades)'],
-	notes: 'Blank.',
+	rewards: [ '[Crimson Hood](https://eldenring.wiki.gg/wiki/Crimson_Hood)', '[Spirit Tuning](https://eldenring.wiki.fextralife.com/Upgrades)' ],
 	stages: [
 		'Speak with the Red Cloaked Woman at the Stormhill Shack',
 		'Obtain the [Chrysalid\'s Memento](https://eldenring.wiki.gg/wiki/Chrysalid\'s_Memento) from Stormveil Castle',
