@@ -4,11 +4,17 @@ import type { Quest } from './types/quest';
 import { QuestForm } from './components/QuestForm';
 import { QuestList } from './components/QuestList';
 import { Questlines } from './data/Questlines';
+import type { World } from './types/world';
+import { WorldList } from './components/WorldList';
 import { questStorage } from './utils/questStorage';
+import { worldModifiers } from './data/worldModifiers';
+import { worldStorage } from './utils/worldStorage';
 import './styles/App.css';
 
 function App() {
+	const [ activeTab, setActiveTab ] = useState<'quests' | 'world'>('quests');
 	const [ quests, setQuests ] = useState<Quest[]>([]);
+	const [ worlds, setWorlds ] = useState<World[]>([]);
 	const [ showForm, setShowForm ] = useState(false);
 
 	// Load quests from localStorage on mount, or initialize with questlines
@@ -19,6 +25,15 @@ function App() {
 			Questlines.map(j => questStorage.addQuest(j));
 		} else {
 			setQuests(savedQuests);
+		}
+
+		// Load worlds from localStorage on mount, or initialize with default worlds
+		const savedWorlds = worldStorage.loadWorlds();
+		if (savedWorlds.length === 0) {
+			setWorlds(worldModifiers);
+			worldModifiers.map(j => worldStorage.addWorld(j));
+		} else {
+			setWorlds(savedWorlds);
 		}
 	}, []);
 
@@ -116,7 +131,20 @@ function App() {
 			}
 		});
 	};
+	const handleWorldToggle = (id: string) => {
+		const updatedWorlds = worlds.map(world =>
+			world.id === id
+				? { ...world, completed: !world.completed }
+				: world
+		);
 
+		setWorlds(updatedWorlds);
+
+		const updated = updatedWorlds.find(w => w.id === id);
+		if (updated) {
+			worldStorage.updateWorldstatus(id, updated.completed);
+		}
+	};
 	return (
 		<div className='app-container'>
 			<header className='app-header'>
@@ -143,13 +171,38 @@ function App() {
 						</button>
 					)}
 					*/}
+				<div className='tab-bar'>
+					<button
+						className={`tab-btn ${activeTab === 'quests' ? 'active' : ''}`}
+						onClick={() => setActiveTab('quests')}
+					>
+						Quests
+					</button>
+
+					<button
+						className={`tab-btn ${activeTab === 'world' ? 'active' : ''}`}
+						onClick={() => setActiveTab('world')}
+					>
+						World
+					</button>
+				</div>
+
 				<section className='list-section'>
-					<QuestList
-						quests={quests}
-						onStatusChange={handleStatusChange}
-						onDelete={handleDeleteQuest}
-						onStageProgress={handleStageProgress}
-					/>
+					{activeTab === 'quests'
+						? (
+							<QuestList
+								quests={quests}
+								onStatusChange={handleStatusChange}
+								onDelete={handleDeleteQuest}
+								onStageProgress={handleStageProgress}
+							/>
+						)
+						: (
+							<WorldList
+								worlds={worlds}
+								onToggle={handleWorldToggle}
+							/>
+						)}
 				</section>
 			</main>
 		</div>

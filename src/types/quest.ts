@@ -8,6 +8,10 @@ export interface QuestStageDependency {
 	dependency: QuestDependency;
 }
 
+export interface WorldDependency {
+	worldId: string;
+}
+
 export interface Quest {
 	id: string;
 	name: string;
@@ -22,7 +26,6 @@ export interface Quest {
 	currentStage: number;
 	dependencies?: QuestDependency[];
 	stageDependencies?: QuestStageDependency[];
+	worldDependencies?: WorldDependency[];
 	wasStageLocked: boolean;
 }
-
-export type QuestStatus = Quest['status'];

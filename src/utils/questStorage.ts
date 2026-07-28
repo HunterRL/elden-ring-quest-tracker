@@ -1,4 +1,4 @@
-import type { Quest, QuestStatus } from '../types/quest';
+import type { Quest } from '../types/quest';
 
 const STORAGE_KEY = 'elden-ring-quests';
 
@@ -47,7 +47,7 @@ export const questStorage = {
 	},
 
 	// Update quest status
-	updateQuestStatus: (id: string, status: QuestStatus): void => {
+	updateQuestStatus: (id: string, status?: 'not-started' | 'in-progress' | 'completed' | 'blocked'): void => {
 		questStorage.updateQuest(id, { status });
 	}
 };
