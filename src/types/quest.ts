@@ -28,4 +28,5 @@ export interface Quest {
 	stageDependencies?: QuestStageDependency[];
 	worldDependencies?: WorldDependency[];
 	wasStageLocked: boolean;
+	image: string;
 }

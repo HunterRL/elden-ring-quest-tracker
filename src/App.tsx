@@ -1,4 +1,4 @@
-import { isQuestBlocked, isStageLocked } from './utils/questDependencies';
+import { intitalCheck, isQuestBlocked, isStageLocked } from './utils/questDependencies';
 import { useEffect, useState } from 'react';
 import type { Quest } from './types/quest';
 import { QuestForm } from './components/QuestForm';
@@ -19,14 +19,6 @@ function App() {
 
 	// Load quests from localStorage on mount, or initialize with questlines
 	useEffect(() => {
-		const savedQuests = questStorage.loadQuests();
-		if (savedQuests.length === 0) {
-			setQuests(Questlines);
-			Questlines.map(j => questStorage.addQuest(j));
-		} else {
-			setQuests(savedQuests);
-		}
-
 		// Load worlds from localStorage on mount, or initialize with default worlds
 		const savedWorlds = worldStorage.loadWorlds();
 		if (savedWorlds.length === 0) {
@@ -35,6 +27,15 @@ function App() {
 		} else {
 			setWorlds(savedWorlds);
 		}
+
+		const savedQuests = questStorage.loadQuests();
+		if (savedQuests.length === 0) {
+			setQuests(Questlines);
+			Questlines.map(j => questStorage.addQuest(j));
+		} else {
+			setQuests(savedQuests);
+		}
+		intitalCheck(quests, worlds);
 	}, []);
 
 	const handleClearAllData = () => {
@@ -50,6 +51,7 @@ function App() {
 			// Reinitialize storage with defaults
 			Questlines.forEach(q => questStorage.addQuest(q));
 			worldModifiers.forEach(w => worldStorage.addWorld(w));
+			intitalCheck(quests, worlds);
 		}
 	};
 

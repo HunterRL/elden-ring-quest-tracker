@@ -2,6 +2,7 @@ import { getBlockedReason, getStageLockReason, getWorldBlockedReason } from '../
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import ReactMarkdown from 'react-markdown';
+import { useState } from 'react';
 import type { World } from '../types/world';
 import '../styles/QuestCard.css';
 
@@ -15,6 +16,7 @@ interface QuestCardProps {
 }
 
 export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], world = [], onStatusChange, onDelete, onStageProgress }) => {
+	const [ isExpanded, setIsExpanded ] = useState(false);
 	const getStatusColor = (status: Quest['status']): string => {
 		switch (status) {
 			case 'not-started':
@@ -58,17 +60,47 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], world = [], 
 	if (blockedReason !== null || nextStageLockReason !== null || worldblockedReason !== null) {
 		quest.status = 'blocked';
 	};
+
+	// Collapsed view
+	if (!isExpanded) {
+		return (
+			<div
+				className={`quest-card quest-card-collapsed ${getStatusColor(quest.status)}`}
+				onClick={() => setIsExpanded(true)}
+			>
+				<div className='quest-collapsed-content'>
+					<div className='quest-image-container'>
+						<img src={quest.image} alt={quest.name} className='quest-image' />
+					</div>
+					<div className='quest-collapsed-text'>
+						<h3 className='quest-name-collapsed'>{quest.name}</h3>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// Expanded view
 	return (
-		<div className={`quest-card ${getStatusColor(quest.status)}`}>
+		<div className={`quest-card quest-card-expanded ${getStatusColor(quest.status)}`}>
 			<div className='quest-header'>
 				<h3 className='quest-name'>{quest.name}</h3>
-				<button
-					className='btn-delete'
-					onClick={() => onDelete(quest.id)}
-					title='Delete quest'
-				>
-					✕
-				</button>
+				<div className='quest-header-buttons'>
+					<button
+						className='btn-collapse'
+						onClick={() => setIsExpanded(false)}
+						title='Collapse quest'
+					>
+						✕
+					</button>
+					<button
+						className='btn-delete'
+						onClick={() => onDelete(quest.id)}
+						title='Delete quest'
+					>
+						🗑
+					</button>
+				</div>
 			</div>
 
 			<div className='quest-meta'>

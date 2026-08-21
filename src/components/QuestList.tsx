@@ -1,3 +1,4 @@
+import { intitalCheck } from '../utils/questDependencies';
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import { QuestCard } from './QuestCard';
@@ -27,7 +28,7 @@ export const QuestList: FC<QuestListProps> = ({
 	const filteredQuests = quests.filter(
 		q => filter === 'all' || q.status === filter
 	);
-
+	intitalCheck(quests, world);
 	const stats = {
 		total: quests.length,
 		notStarted: quests.filter(q => q.status === 'not-started').length,

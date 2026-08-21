@@ -38,7 +38,8 @@ const fiaQuestline: Quest = {
 		{
 			worldId: 'world-godrick-001'
 		}
-	]
+	],
+	image: '/images/quests/fia-001.jpg'
 };
 
 const patchesQuestline: Quest = {
@@ -138,4 +139,5 @@ const roderikaquest: Quest = {
 	currentStage: 0,
 	wasStageLocked: false
 };
-export const Questlines = [ fiaQuestline, patchesQuestline, tanithQuestline, roderikaquest ];
+// , patchesQuestline, tanithQuestline, roderikaquest
+export const Questlines = [ fiaQuestline ];

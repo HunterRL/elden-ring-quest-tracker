@@ -157,3 +157,11 @@ export function getWorldBlockedReason(quest: Quest, allWorldModifiers: World[]):
 	}
 	return null;
 };
+
+export function intitalCheck(quests: Quest[], worlds: World[]) {
+	quests.forEach(quest => {
+		if (isQuestBlocked(quest, quests, worlds)) {
+			quest.status = 'blocked';
+		}
+	});
+};
