@@ -1,11 +1,13 @@
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import { QuestCard } from './QuestCard';
+import type { World } from '../types/world';
 import { useState } from 'react';
 import '../styles/QuestList.css';
 
 interface QuestListProps {
 	quests: Quest[];
+	world: World[];
 	onStatusChange: (id: string, status: Quest['status']) => void;
 	onDelete: (id: string) => void;
 	onStageProgress?: (id: string, stageIndex: number) => void;
@@ -13,6 +15,7 @@ interface QuestListProps {
 
 export const QuestList: FC<QuestListProps> = ({
 	quests,
+	world,
 	onStatusChange,
 	onDelete,
 	onStageProgress
@@ -104,6 +107,7 @@ export const QuestList: FC<QuestListProps> = ({
 								key={quest.id}
 								quest={quest}
 								quests={quests}
+								world={world}
 								onStatusChange={onStatusChange}
 								onDelete={onDelete}
 								onStageProgress={onStageProgress}

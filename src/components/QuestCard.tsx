@@ -1,18 +1,20 @@
-import { getBlockedReason, getStageLockReason } from '../utils/questDependencies';
+import { getBlockedReason, getStageLockReason, getWorldBlockedReason } from '../utils/questDependencies';
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import ReactMarkdown from 'react-markdown';
+import type { World } from '../types/world';
 import '../styles/QuestCard.css';
 
 interface QuestCardProps {
 	quest: Quest;
 	quests?: Quest[];
+	world: World[];
 	onStatusChange: (id: string, status: Quest['status']) => void;
 	onDelete: (id: string) => void;
 	onStageProgress?: (id: string, stageIndex: number) => void;
 }
 
-export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChange, onDelete, onStageProgress }) => {
+export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], world = [], onStatusChange, onDelete, onStageProgress }) => {
 	const getStatusColor = (status: Quest['status']): string => {
 		switch (status) {
 			case 'not-started':
@@ -52,10 +54,10 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
           quest.currentStage < quest.stages.length - 1
 			? getStageLockReason(quest, quest.currentStage + 1, quests)
 			: null;
-	if (blockedReason !== null || nextStageLockReason !== null) {
+	const worldblockedReason = getWorldBlockedReason(quest, world);
+	if (blockedReason !== null || nextStageLockReason !== null || worldblockedReason !== null) {
 		quest.status = 'blocked';
 	};
-
 	return (
 		<div className={`quest-card ${getStatusColor(quest.status)}`}>
 			<div className='quest-header'>
@@ -84,10 +86,10 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], onStatusChan
 				<p className='quest-description'>{quest.description}</p>
 			)}
 
-			{quest.requirements && (
-				<span className='quest-requirements'>
-					<strong>Requirements:</strong> {quest.requirements}
-				</span>
+			{worldblockedReason && (
+				<div className='quest-blocked-message'>
+					<strong>⚠ {worldblockedReason}</strong>
+				</div>
 			)}
 
 			{blockedReason && (

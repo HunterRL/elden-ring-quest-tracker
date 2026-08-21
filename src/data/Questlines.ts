@@ -24,13 +24,6 @@ const fiaQuestline: Quest = {
 	],
 	currentStage: 0,
 	wasStageLocked: false,
-	// Fia's Quest can't be started until Patches' quest is at stage 2
-	dependencies: [
-		{
-			questId: 'quest-patches-001',
-			requiredStage: 1 // Stage 2 in 0-indexed is 1
-		}
-	],
 	// Stage 3 of Fia's Quest can't be progressed to Stage 4 until patches' quest is at stage 6
 	stageDependencies: [
 		{
@@ -39,6 +32,11 @@ const fiaQuestline: Quest = {
 				questId: 'quest-patches-001',
 				requiredStage: 5 // Stage 6 in 0-indexed is 5
 			}
+		}
+	],
+	worldDependencies: [
+		{
+			worldId: 'world-godrick-001'
 		}
 	]
 };

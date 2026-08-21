@@ -37,6 +37,22 @@ function App() {
 		}
 	}, []);
 
+	const handleClearAllData = () => {
+		if (window.confirm('Are you sure you want to clear all quest and world data? This cannot be undone.')) {
+			// Clear localStorage
+			localStorage.removeItem('elden-ring-quests');
+			localStorage.removeItem('elden-ring-world-modifiers');
+
+			// Reset state to defaults
+			setQuests(Questlines);
+			setWorlds(worldModifiers);
+
+			// Reinitialize storage with defaults
+			Questlines.forEach(q => questStorage.addQuest(q));
+			worldModifiers.forEach(w => worldStorage.addWorld(w));
+		}
+	};
+
 	const handleAddQuest = (questData: Omit<Quest, 'id'>) => {
 		const newQuest: Quest = {
 			...questData,
@@ -52,7 +68,7 @@ function App() {
 		const updatedQuests = quests.map(q => {
 			if (q.id === id) {
 			// If trying to set to in-progress, check if blocked
-				if (newStatus === 'in-progress' && isQuestBlocked(q, quests)) {
+				if (newStatus === 'in-progress' && isQuestBlocked(q, quests, worlds)) {
 					return { ...q, status: 'blocked' as const };
 				}
 				return { ...q, status: newStatus };
@@ -62,7 +78,7 @@ function App() {
 
 		// Update all dependent quests - check if their blocked status should change
 		const finalQuests = updatedQuests.map(q => {
-			if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
+			if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests, worlds)) {
 			// Quest is no longer blocked, set it to not-started
 				return { ...q, status: 'not-started' as const };
 			}
@@ -106,7 +122,7 @@ function App() {
 
 		// Check if any dependent quests should be unblocked
 		const finalQuests = updatedQuests.map(q => {
-			if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests)) {
+			if (q.status === 'blocked' && !isQuestBlocked(q, updatedQuests, worlds)) {
 				if (q.wasStageLocked) {
 					q.wasStageLocked = false;
 					return { ...q, status: 'in-progress' as const };
@@ -139,17 +155,42 @@ function App() {
 		);
 
 		setWorlds(updatedWorlds);
+		const finalQuests = quests.map(q => {
+			if (q.status === 'blocked' && !isQuestBlocked(q, quests, updatedWorlds)) {
+				// Quest is no longer blocked, set it to not-started
+				return { ...q, status: 'not-started' as const };
+			}
+			return q;
+		});
 
+		setQuests(finalQuests);
+
+		// Update world in storage
 		const updated = updatedWorlds.find(w => w.id === id);
 		if (updated) {
 			worldStorage.updateWorldstatus(id, updated.completed);
 		}
+
+		// Update any quests that changed status
+		finalQuests.forEach(q => {
+			const originalQuest = quests.find(orig => orig.id === q.id);
+			if (originalQuest && originalQuest.status !== q.status) {
+				questStorage.updateQuestStatus(q.id, q.status);
+			}
+		});
 	};
 	return (
 		<div className='app-container'>
 			<header className='app-header'>
 				<h1>Elden Ring Quest Tracker</h1>
 				<p>The Call of Long-Lost Grace guides you Tranished</p>
+				<button
+					className='btn btn-danger'
+					onClick={handleClearAllData}
+					style={{ position: 'absolute', top: '1rem', right: '1rem' }}
+				>
+					Clear All Data
+				</button>
 			</header>
 			<main className='app-main'>
 				{/*
@@ -192,6 +233,7 @@ function App() {
 						? (
 							<QuestList
 								quests={quests}
+								world={worlds}
 								onStatusChange={handleStatusChange}
 								onDelete={handleDeleteQuest}
 								onStageProgress={handleStageProgress}

@@ -7,16 +7,25 @@ import type { World } from '../types/world';
  * @param allQuests - All quests for reference
  * @returns true if the quest is blocked, false otherwise
  */
-export function isQuestBlocked(quest: Quest, allQuests: Quest[]): boolean {
+export function isQuestBlocked(quest: Quest, allQuests: Quest[], allWorldModifiers: World[]): boolean {
+	let worldBlocked = false;
+	let questBlocked = false;
+	if (quest.worldDependencies && quest.worldDependencies.length > 0) {
+		for (const dep of quest.worldDependencies) {
+			if (!isWorldDependencyMet(dep, allWorldModifiers)) {
+				worldBlocked = true;
+			}
+		}
+	}
 	// Check if quest has dependencies for starting
 	if (quest.dependencies && quest.dependencies.length > 0) {
 		for (const dep of quest.dependencies) {
 			if (!isDependencyMet(dep, allQuests)) {
-				return true;
+				questBlocked = true;
 			}
 		}
 	}
-	return false;
+	return worldBlocked || questBlocked;
 }
 
 /**
@@ -116,14 +125,10 @@ export function getStageLockReason(
 	}
 	return null;
 };
-export function isWorldDependencyMet(quest: Quest, dependency: WorldDependency, allWorldModifiers: World[]): boolean {
-	if (quest.worldDependencies && quest.worldDependencies.length > 0) {
-		for (const worldDep of quest.worldDependencies) {
-			if (worldDep.worldId === dependency.worldId) {
-				return allWorldModifiers.some(w => w.id === worldDep.worldId);
-			}
-		}
-	}
+export function isWorldDependencyMet(dependency: WorldDependency, allWorldModifiers: World[]): boolean {
+	const dependencyWorld = allWorldModifiers.find(w => w.id === dependency.worldId);
+	if (!dependencyWorld) { return false; }
+	if (dependencyWorld.completed) { return true; }
 	return false;
 }
 
@@ -131,7 +136,7 @@ export function isQuestWorldBlocked(quest: Quest, allWorldModifiers: World[]): b
 	// Check if quest has dependencies for starting
 	if (quest.worldDependencies && quest.worldDependencies.length > 0) {
 		for (const dep of quest.worldDependencies) {
-			if (!isWorldDependencyMet(quest, dep, allWorldModifiers)) {
+			if (!isWorldDependencyMet(dep, allWorldModifiers)) {
 				return true;
 			}
 		}
@@ -140,13 +145,13 @@ export function isQuestWorldBlocked(quest: Quest, allWorldModifiers: World[]): b
 }
 
 export function getWorldBlockedReason(quest: Quest, allWorldModifiers: World[]): string | null {
-	if (!quest.worldDependencies || quest.worldDependencies.length === 0) { return null; }
-
-	for (const dep of quest.worldDependencies) {
-		if (!isWorldDependencyMet(quest, dep, allWorldModifiers)) {
-			const depWorld = allWorldModifiers.find(w => w.id === dep.worldId);
-			if (depWorld) {
-				return `This Quest requires ${depWorld.name} to be defeated`;
+	if (quest.worldDependencies && quest.worldDependencies.length > 0) {
+		for (const dep of quest.worldDependencies) {
+			if (!isWorldDependencyMet(dep, allWorldModifiers)) {
+				const depWorld = allWorldModifiers.find(w => w.id === dep.worldId);
+				if (depWorld) {
+					return `This Quest requires ${depWorld.name} to be defeated`;
+				}
 			}
 		}
 	}
