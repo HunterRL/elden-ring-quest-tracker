@@ -1,8 +1,9 @@
-import { intitalCheck } from '../utils/questDependencies';
+import { intitalCheck, isQuestBlocked } from '../utils/questDependencies';
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import { QuestCard } from './QuestCard';
 import type { World } from '../types/world';
+import { useSettings } from '../contexts/SettingsContext';
 import { useState } from 'react';
 import '../styles/QuestList.css';
 
@@ -24,10 +25,19 @@ export const QuestList: FC<QuestListProps> = ({
 	const [ filter, setFilter ] = useState<'all' | 'not-started' | 'in-progress' | 'completed' | 'blocked'>(
 		'all'
 	);
+	const { showSpoilers } = useSettings();
 
-	const filteredQuests = quests.filter(
-		q => filter === 'all' || q.status === filter
-	);
+	const filteredQuests = quests.filter(q => {
+		// Filter by status
+		if (filter !== 'all' && q.status !== filter) {
+			return false;
+		}
+		// Hide spoilers: don't show quests that are blocked by requirements (not progress-blocked)
+		if (!showSpoilers && q.status === 'blocked' && isQuestBlocked(q, quests, world)) {
+			return false;
+		}
+		return true;
+	});
 	intitalCheck(quests, world);
 	const stats = {
 		total: quests.length,

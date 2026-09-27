@@ -4,9 +4,11 @@ import type { Quest } from './types/quest';
 import { QuestForm } from './components/QuestForm';
 import { QuestList } from './components/QuestList';
 import { Questlines } from './data/Questlines';
+import { SettingsMenu } from './components/SettingsMenu';
 import type { World } from './types/world';
 import { WorldList } from './components/WorldList';
 import { questStorage } from './utils/questStorage';
+import { useSettings } from './contexts/SettingsContext';
 import { worldModifiers } from './data/worldModifiers';
 import { worldStorage } from './utils/worldStorage';
 import './styles/App.css';
@@ -16,6 +18,8 @@ function App() {
 	const [ quests, setQuests ] = useState<Quest[]>([]);
 	const [ worlds, setWorlds ] = useState<World[]>([]);
 	const [ showForm, setShowForm ] = useState(false);
+	const [ showSettings, setShowSettings ] = useState(false);
+	const { showSpoilers } = useSettings();
 
 	// Load quests from localStorage on mount, or initialize with questlines
 	useEffect(() => {
@@ -185,13 +189,13 @@ function App() {
 		<div className='app-container'>
 			<header className='app-header'>
 				<h1>Elden Ring Quest Tracker</h1>
-				<p>The Call of Long-Lost Grace guides you Tranished</p>
+				<p>The Call of Long-Lost Grace guides you Tarnished</p>
 				<button
-					className='btn btn-danger'
-					onClick={handleClearAllData}
+					className='btn btn-icon settings-btn'
+					onClick={() => setShowSettings(true)}
 					style={{ position: 'absolute', top: '1rem', right: '1rem' }}
 				>
-					Clear All Data
+					⚙️
 				</button>
 			</header>
 			<main className='app-main'>
@@ -249,6 +253,11 @@ function App() {
 						)}
 				</section>
 			</main>
+			<SettingsMenu
+				isOpen={showSettings}
+				onClose={() => setShowSettings(false)}
+				onClearAllData={handleClearAllData}
+			/>
 		</div>
 	);
 }

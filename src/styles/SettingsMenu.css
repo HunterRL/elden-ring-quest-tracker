@@ -1,0 +1,152 @@
+/* Settings Menu Styles */
+
+.settings-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+}
+
+.settings-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(26, 26, 46, 0.95);
+	border: 2px solid #d4af37;
+	border-radius: 12px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	min-width: 400px;
+	max-width: 90%;
+	backdrop-filter: blur(10px);
+}
+
+.settings-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.5rem;
+	border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.settings-header h2 {
+	margin: 0;
+	color: #d4af37;
+	font-size: 1.5rem;
+}
+
+.close-btn {
+	background: none;
+	border: none;
+	color: #b8b8b8;
+	font-size: 1.5rem;
+	cursor: pointer;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.2s;
+}
+
+.close-btn:hover {
+	color: #d4af37;
+}
+
+.settings-content {
+	padding: 2rem 1.5rem;
+}
+
+.settings-item {
+	margin-bottom: 1.5rem;
+}
+
+.settings-label {
+	display: block;
+	color: #d4af37;
+	font-size: 1rem;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.settings-description {
+	color: #b8b8b8;
+	font-size: 0.875rem;
+	margin: 0 0 1rem 0;
+	line-height: 1.4;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.toggle-input {
+	display: none;
+}
+
+.toggle-label {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	user-select: none;
+}
+
+.toggle-slider {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 24px;
+	background: #4a4a6a;
+	border-radius: 12px;
+	transition: background 0.3s;
+	border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.toggle-slider::after {
+	content: '';
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: white;
+	top: 2px;
+	left: 2px;
+	transition: left 0.3s;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider {
+	background: #d4af37;
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider::after {
+	left: 28px;
+}
+
+.settings-footer {
+	display: flex;
+	justify-content: center;
+	padding: 1.5rem;
+	border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.settings-footer .btn {
+	min-width: 200px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+	.settings-modal {
+		min-width: auto;
+		width: 90vw;
+		max-width: 100%;
+	}
+}

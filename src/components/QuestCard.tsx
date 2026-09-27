@@ -2,8 +2,8 @@ import { getBlockedReason, getStageLockReason, getWorldBlockedReason } from '../
 import type { FC } from 'react';
 import type { Quest } from '../types/quest';
 import ReactMarkdown from 'react-markdown';
-import { useState } from 'react';
 import type { World } from '../types/world';
+import { useState } from 'react';
 import '../styles/QuestCard.css';
 
 interface QuestCardProps {
