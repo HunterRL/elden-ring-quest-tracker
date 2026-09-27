@@ -1,5 +1,5 @@
 import type { Quest } from '../types/quest';
-
+// added rogier's quest dependencies
 const fiaQuestline: Quest = {
 	id: 'quest-fia-001',
 	name: 'Fia\'s Quest',
@@ -13,7 +13,7 @@ const fiaQuestline: Quest = {
 		'Speak with Fia, reload the area, then speak with Sorcerer Rogier',
 		'Head to the Altus Plateau, and speak to Fia near the Grand Lift of Dectus',
 		'Speak with Fia to receive the Weathered Dagger',
-		'Give the Dagger to D at the Roundtable Hold',
+		// 'Give the Dagger to D at the Roundtable Hold',
 		'Reload the area and speak with Fia at her new location (Smithing Master Hewg)',
 		'Go to the Prince of Death\'s Throne and speak with Fia',
 		'Embrace her when she asks you if you came to kill her',
@@ -27,10 +27,10 @@ const fiaQuestline: Quest = {
 	// Stage 3 of Fia's Quest can't be progressed to Stage 4 until patches' quest is at stage 6
 	stageDependencies: [
 		{
-			fromStage: 2, // Stage 3 in 0-indexed is 2, moving from stage 2 to 3
+			fromStage: 3, // Stage 3 in 0-indexed is 2, moving from stage 2 to 3
 			dependency: {
-				questId: 'quest-patches-001',
-				requiredStage: 5 // Stage 6 in 0-indexed is 5
+				questId: 'quest-d-001',
+				requiredStage: 4 // Stage 6 in 0-indexed is 5
 			}
 		}
 	],
@@ -74,7 +74,8 @@ const patchesQuestline: Quest = {
 				requiredStage: 6
 			}
 		}
-	]
+	],
+	image: '/images/quests/patches-001.jpg'
 };
 
 const tanithQuestline: Quest = {
@@ -113,7 +114,8 @@ const tanithQuestline: Quest = {
 				requiredStage: 10
 			}
 		}
-	]
+	],
+	image: '/images/quests/tanith-001.jpg'
 };
 
 const roderikaquest: Quest = {
@@ -137,7 +139,72 @@ const roderikaquest: Quest = {
 		'Completed'
 	],
 	currentStage: 0,
-	wasStageLocked: false
+	wasStageLocked: false,
+	image: '/images/quests/roderika-001.jpg'
 };
-// , patchesQuestline, tanithQuestline, roderikaquest
-export const Questlines = [ fiaQuestline ];
+// requirement: need to be added, get two great runes.
+const poopquest: Quest = {
+	id: 'quest-poop-001',
+	name: 'Dung Eater\'s Quest',
+	npc: 'Dung Eater',
+	status: 'not-started',
+	description: 'Blank',
+	location: 'Roundtable Hold',
+	rewards: [ '[Sewer-Gaol Key](https://eldenring.wiki.gg/wiki/Sewer-Gaol_Key)', '[Mending Rune of the Fell Curse](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Fell_Curse)'],
+	stages: [
+		'Speak with the Dung Eater at the Roundtable Hold',
+		'Give him a [Seedbed Curse](https://eldenring.wiki.gg/wiki/Seedbed_Curse) to get the [Sewer-Gaol Key](https://eldenring.wiki.gg/wiki/Sewer-Gaol_Key)',
+		'Use the [Sewer-Gaol Key](https://eldenring.wiki.gg/wiki/Sewer-Gaol_Key) to access the sewers beneath Leyndell and speak to Dung Eater there',
+		'Speak to Dung Eater, saying "Leave your gaol!"',
+		'Return to the Roundtable Hold. Dung Eater has left you a message, challenging you to a fight',
+		'Defeat Dung Eater outside Lendell',
+		'Return to Dung Eater at the Roundtable Hold',
+		'Bring 5 [Seedbed Curses](https://eldenring.wiki.gg/wiki/Seedbed_Curse) to Dung Eater\'s body in the sewers underneath Leyndell and receive the [Mending Rune of the Fell Curse](https://eldenring.wiki.gg/wiki/Mending_Rune_of_the_Fell_Curse)',
+		'Completed'
+	],
+	currentStage: 0,
+	wasStageLocked: false,
+	image: '/images/quests/poop-001.jpg'
+};
+
+// need to add optional choice to not give set, add beastman dependency
+const dquest: Quest = {
+	id: 'quest-d-001',
+	name: 'D\'s Quest',
+	npc: 'D, Hunter of the Dead',
+	status: 'not-started',
+	description: 'Blank',
+	location: 'Summonwater Village',
+	rewards: [],
+	stages: [
+		'Speak with D west of Summonwater Village',
+		'Speak with D at the entrance of Summonwater Village',
+		'Speak with D at the Roundtable Hold',
+		'Give the [Weathered Dagger](https://eldenring.wiki.gg/wiki/Weathered_Dagger) to D at the Roundtable Hold',
+		'Return to where Fia was when you got the [Weathered Dagger](https://eldenring.wiki.gg/wiki/Weathered_Dagger) and loot the [Twinned Set](https://eldenring.wiki.gg/wiki/Twinned_Set) and [D\'s Bell Bearing](https://eldenring.wiki.gg/wiki/D\'s_Bell_Bearing)',
+		'Give the [Twinned Set](https://eldenring.wiki.gg/wiki/Twinned_Set) to D\'s twin Brother in the Roundtable Hold',
+		'Speak with D\'s twin Brother in Deeproot Depths',
+		'Completed'
+	],
+	currentStage: 0,
+	wasStageLocked: false,
+	stageDependencies: [
+		{
+			fromStage: 3,
+			dependency: {
+				questId: 'quest-fia-001',
+				requiredStage: 2
+			}
+		},
+		{
+			fromStage: 6,
+			dependency: {
+				questId: 'quest-fia-001',
+				requiredStage: 9
+			}
+		}
+	],
+	image: '/images/quests/d-001.jpg'
+};
+
+export const Questlines = [ fiaQuestline, patchesQuestline, tanithQuestline, roderikaquest, poopquest, dquest ];
