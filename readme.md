@@ -18,12 +18,12 @@ A comprehensive, interactive quest tracking application for *Elden Ring* built w
 
 - **Smart Dependency System** - Automatically detect when quests are blocked:
   - **Quest Dependencies**: Certain quests can only progress after completing specific stages in other quests
-  - **Boss/World Dependencies**: Some quests require you to defeat specific bosses or complete world challenges before advancing
+  - **Boss/World Dependencies**: Some quests require you to defeat specific bosses
   - **Mid-Stage Dependencies**: Block progression to specific quest stages until their requirements are met
 
 - **Quest Details** - Comprehensive information for each quest:
   - NPC name and location
-  - Quest description with markdown support
+  - Quest description
   - Stage-by-stage guide
   - Rewards (with links to the Elden Ring wiki.gg)
   - Personal notes
