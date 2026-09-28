@@ -35,7 +35,7 @@ A comprehensive, interactive quest tracking application for *Elden Ring* built w
 
 ### Storage
 - **Local Storage** - All progress automatically saves to your browser's local storage
-- **Reset Option** - Clear all data and return to default questlines when starting a new playthrough
+- **Reset Option** - Clear all data and return to default when starting a new playthrough
 
 ### Settings
 - **Spoiler Toggle** - Hides quest that you do not have access to yet, toggled on by default
@@ -63,7 +63,7 @@ A comprehensive, interactive quest tracking application for *Elden Ring* built w
 
 3. **Start the development server**
    ```bash
-   npm start
+   npm run start
    ```
    The app will open at `http://localhost:5173`
 
@@ -85,11 +85,17 @@ The optimized build will be created in the `dist/` directory.
 src/
 ├── components/          # React components
 │   ├── QuestCard.tsx       # Individual quest display
-│   ├── QuestList.tsx       # Quest list container
 │   ├── QuestForm.tsx       # Add new quest form
+│   ├── QuestList.tsx       # Quest list container
+│   ├── SettingsMenu.tsx    # Settings UI
 │   ├── WorldCard.tsx       # Boss/world tracker
-│   ├── WorldList.tsx       # World list container
-│   └── SettingsMenu.tsx    # Settings UI
+│   └── WorldList.tsx       # World list container
+├── contexts/           # React context for state
+│   └── SettingsContext.tsx # Settings state management
+├── data/               # Hardcoded quest/world data
+│   ├── Questlines.ts       # quests
+│   └── worldModifiers.ts   # Boss/world list
+├── styles/             # CSS styling
 ├── types/              # TypeScript type definitions
 │   ├── quest.ts           # Quest and dependency types
 │   └── world.ts           # World/boss types
@@ -97,12 +103,6 @@ src/
 │   ├── questDependencies.ts  # Dependency checking logic
 │   ├── questStorage.ts       # LocalStorage management
 │   └── worldStorage.ts       # World data persistence
-├── data/               # Hardcoded quest/world data
-│   ├── Questlines.ts       # Pre-populated quests
-│   └── worldModifiers.ts   # Boss/world list
-├── contexts/           # React context for state
-│   └── SettingsContext.tsx # Settings state management
-└── styles/             # CSS styling
 ```
 
 ## Development
@@ -110,7 +110,7 @@ src/
 ### Available Scripts
 
 ```bash
-npm start       # Start dev server
+npm run start   # Start dev server
 npm run build   # Build for production
 npm run lint    # Run ESLint
 npm run fix     # Auto-fix linting issues
