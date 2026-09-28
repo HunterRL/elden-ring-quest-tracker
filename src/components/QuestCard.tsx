@@ -53,8 +53,8 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], world = [], 
 	const blockedReason = getBlockedReason(quest, quests);
 	const nextStageLockReason =
 		quest.currentStage !== undefined &&
-          quest.currentStage < quest.stages.length - 1
-			? getStageLockReason(quest, quest.currentStage + 1, quests)
+		quest.currentStage < quest.stages.length - 1
+			? getStageLockReason(quest, quest.currentStage + 1, quests, world)
 			: null;
 	const worldblockedReason = getWorldBlockedReason(quest, world);
 	if (blockedReason !== null || nextStageLockReason !== null || worldblockedReason !== null) {
@@ -140,7 +140,7 @@ export const QuestCard: FC<QuestCardProps> = ({ quest, quests = [], world = [], 
 					<div className='stages-progress-bar' style={{ '--progress-fill': `${getProgressFill()}%` } as React.CSSProperties}>
 						<div className='progress-track'>
 							{quest.stages.map((stage, idx) => {
-								const stageLocked = getStageLockReason(quest, idx, quests);
+								const stageLocked = getStageLockReason(quest, idx, quests, world);
 								return (
 									<button
 										key={idx}

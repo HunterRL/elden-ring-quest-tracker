@@ -12,6 +12,11 @@ export interface WorldDependency {
 	worldId: string;
 }
 
+export interface StageWorldDependency {
+	fromStage: number;
+	dependency: WorldDependency;
+}
+
 export interface Quest {
 	id: string;
 	name: string;
@@ -27,6 +32,7 @@ export interface Quest {
 	dependencies?: QuestDependency[];
 	stageDependencies?: QuestStageDependency[];
 	worldDependencies?: WorldDependency[];
+	stageWorldDependencies?: StageWorldDependency[];
 	wasStageLocked: boolean;
 	image: string;
 }

@@ -31,30 +31,45 @@ export function isQuestBlocked(quest: Quest, allQuests: Quest[], allWorldModifie
 /**
  * Check if a specific stage progression is blocked
  * @param quest - The quest
- * @param fromStage - The stage trying to progress from (0-indexed)
+ * @param targetStage - The stage trying to progress to (0-indexed)
  * @param allQuests - All quests for reference
+ * @param allWorldModifiers - All worlds for reference (optional)
  * @returns true if the stage progression is blocked, false otherwise
  */
 export function isStageLocked(
 	quest: Quest,
 	targetStage: number,
-	allQuests: Quest[]
+	allQuests: Quest[],
+	allWorldModifiers?: World[]
 ): boolean {
 	if (targetStage <= 0) { return false; }
-	if (!quest.stageDependencies) {
-		return false;
-	}
 
 	const previousStage = targetStage - 1;
 
-	for (const stageDep of quest.stageDependencies) {
-		if (stageDep.fromStage === previousStage) {
-			if (!isDependencyMet(stageDep.dependency, allQuests)) {
-				quest.wasStageLocked = true;
-				return true;
+	// Check quest dependencies
+	if (quest.stageDependencies) {
+		for (const stageDep of quest.stageDependencies) {
+			if (stageDep.fromStage === previousStage) {
+				if (!isDependencyMet(stageDep.dependency, allQuests)) {
+					quest.wasStageLocked = true;
+					return true;
+				}
 			}
 		}
 	}
+
+	// Check world dependencies
+	if (allWorldModifiers && quest.stageWorldDependencies) {
+		for (const stageWorldDep of quest.stageWorldDependencies) {
+			if (stageWorldDep.fromStage === previousStage) {
+				if (!isWorldDependencyMet(stageWorldDep.dependency, allWorldModifiers)) {
+					quest.wasStageLocked = true;
+					return true;
+				}
+			}
+		}
+	}
+
 	return false;
 }
 
@@ -101,28 +116,49 @@ export function getBlockedReason(quest: Quest, allQuests: Quest[]): string | nul
  * @param quest - The quest
  * @param fromStage - The stage trying to progress from (0-indexed)
  * @param allQuests - All quests for reference
+ * @param allWorldModifiers - All worlds for reference
  * @returns A description of why the stage is locked, or null if not locked
  */
 export function getStageLockReason(
 	quest: Quest,
 	targetStage: number,
-	allQuests: Quest[]
+	allQuests: Quest[],
+	allWorldModifiers?: World[]
 ): string | null {
-	if (!quest.stageDependencies || targetStage <= 0) { return null; }
+	if (targetStage <= 0) { return null; }
 
 	const previousStage = targetStage - 1;
 
-	for (const stageDep of quest.stageDependencies) {
-		if (stageDep.fromStage === previousStage) {
-			if (!isDependencyMet(stageDep.dependency, allQuests)) {
-				const depQuest = allQuests.find(q => q.id === stageDep.dependency.questId);
-				if (depQuest) {
-					quest.wasStageLocked = true;
-					return `Stage ${targetStage + 1} requires ${depQuest.name} to reach Stage ${stageDep.dependency.requiredStage + 1}`;
+	// Check quest dependencies
+	if (quest.stageDependencies) {
+		for (const stageDep of quest.stageDependencies) {
+			if (stageDep.fromStage === previousStage) {
+				if (!isDependencyMet(stageDep.dependency, allQuests)) {
+					const depQuest = allQuests.find(q => q.id === stageDep.dependency.questId);
+					if (depQuest) {
+						quest.wasStageLocked = true;
+						return `To continue, ${depQuest.name} needs to reach Stage ${stageDep.dependency.requiredStage + 1}`;
+					}
 				}
 			}
 		}
 	}
+
+	// Check world dependencies
+	if (allWorldModifiers && quest.stageWorldDependencies) {
+		for (const stageWorldDep of quest.stageWorldDependencies) {
+			if (stageWorldDep.fromStage === previousStage) {
+				if (!isWorldDependencyMet(stageWorldDep.dependency, allWorldModifiers)) {
+					const depWorld = allWorldModifiers.find(w => w.id === stageWorldDep.dependency.worldId);
+					if (depWorld) {
+						quest.wasStageLocked = true;
+						return `To continue, ${depWorld.name} needs to be defeated`;
+					}
+				}
+			}
+		}
+	}
+
 	return null;
 };
 export function isWorldDependencyMet(dependency: WorldDependency, allWorldModifiers: World[]): boolean {
